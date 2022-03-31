@@ -31,3 +31,9 @@ func TimestampToDate(timestamp int64) string {
 	ts := time.Unix(timestamp, 0)
 	return ts.Format("2006-01-02")
 }
+
+func AppendRes(res *model.NewsList, newsList *model.NewsList) {
+	res.Mutex.Lock()
+	res.Data = append(res.Data, newsList.Data...)
+	res.Mutex.Unlock()
+}

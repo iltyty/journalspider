@@ -1,6 +1,9 @@
 package model
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"sync"
+)
 
 type WebSite struct {
 	Domain         string
@@ -19,6 +22,7 @@ type News struct {
 }
 
 type NewsList struct {
-	XMLName xml.Name `xml:"data"`
-	Data    []*News  `xml:"news"`
+	Mutex   sync.Mutex `xml:"-"`
+	XMLName xml.Name   `xml:"data"`
+	Data    []*News    `xml:"news"`
 }

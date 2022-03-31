@@ -11,6 +11,7 @@ import (
 
 const (
 	resDir           = "data/"
+	resFile          = resDir + "news.xml"
 	PeopleDailyFile  = resDir + "people_daily.xml"
 	HunanDailyFile   = resDir + "hunan_daily.xml"
 	JieFangDailyFile = resDir + "jiefang_daily.xml"
@@ -40,10 +41,10 @@ func checkDirExist() {
 	}
 }
 
-func StoreNewsList(newsList *model.NewsList, path string) {
+func StoreNewsList(newsList *model.NewsList) {
 	checkDirExist()
 
-	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0755)
+	file, err := os.OpenFile(resFile, os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}

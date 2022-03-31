@@ -3,10 +3,10 @@ package hunan
 import (
 	"github.com/gocolly/colly"
 	"github.com/iltyty/journalspider/model"
-	"github.com/iltyty/journalspider/storage"
 	"github.com/iltyty/journalspider/util"
 	"log"
 	"strings"
+	"sync"
 )
 
 var hn = model.WebSite{
@@ -91,8 +91,10 @@ func crawl(pc *colly.Collector) {
 	}
 }
 
-func Entry() {
+func Entry(res *model.NewsList, wg *sync.WaitGroup) {
 	pc := registerCollectors()
 	crawl(pc)
-	storage.StoreNewsList(newsList, storage.HunanDailyFile)
+	//storage.StoreNewsList(newsList, storage.HunanDailyFile)
+	util.AppendRes(res, newsList)
+	wg.Done()
 }

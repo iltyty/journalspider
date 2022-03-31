@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/iltyty/journalspider/model"
-	"github.com/iltyty/journalspider/storage"
 	"github.com/iltyty/journalspider/util"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 // ArticleLink 代表文章详情链接
@@ -23,7 +23,7 @@ type articleLink struct {
 }
 
 var dates = []string{
-	"2022-03-29",
+	"2022-03-30",
 }
 
 var newsList = &model.NewsList{}
@@ -116,8 +116,10 @@ func getAllNewsDetail(links []articleLink) {
 	}
 }
 
-func Entry() {
+func Entry(res *model.NewsList, wg *sync.WaitGroup) {
 	links := getAllNewsLinks()
 	getAllNewsDetail(links)
-	storage.StoreNewsList(newsList, storage.JieFangDailyFile)
+	//storage.StoreNewsList(newsList, storage.JieFangDailyFile)
+	util.AppendRes(res, newsList)
+	wg.Done()
 }
