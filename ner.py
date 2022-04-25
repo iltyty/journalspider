@@ -1,19 +1,18 @@
+import xml.dom.minidom
+
 import hanlp
 import xml.etree.cElementTree as et
 
 
 RES_DIR = "./data/"
-PEOPLE_DAILY = RES_DIR + "people_daily.xml"
-HUNAN_DAILY = RES_DIR + "hunan_daily.xml"
-JF_DAILY = RES_DIR + "jiefang_daily.xml"
-BJ_NEWS  = RES_DIR + "xinjing.xml"
-BJ_YOUTH = RES_DIR + "qingnian.xml"
+RES_FILE = RES_DIR + 'news.xml'
 
 
 class News:
     def __init__(self, title, content) -> None:
         self.title = title
         self.content = content
+        self.entities = []
 
 
 def parse_xml(path: str) -> list[News]:
@@ -38,19 +37,43 @@ def word_sep(news_list: list[News]):
         .append(hanlp.utils.rules.split_sentence) \
         .append(tok) \
         .append(lambda sents: sum(sents, []))
-    
+
     for news in news_list:
+        if not news.content:
+            continue
         sep_res = list(set(HanLP(news.content)))
         ner_res = ner(sep_res)
         for r in ner_res:
             if r[1] in ['PERSON', 'LOCATION', 'ORGANIZATION']:
-                print(r[0], r[1])
-        # print([x[0] for x in ner(sep_res)])
+                news.entities.append((r[0], r[1]))
+
+
+def save_res(news_list: list[News], file="./data/ner.xml"):
+    doc = xml.dom.minidom.Document()
+    root = doc.createElement("data")
+    doc.appendChild(root)
+
+    for news in news_list:
+        news_node = doc.createElement('news')
+        news_node.setAttribute('title', news.title)
+
+        for entity in news.entities:
+            entity_node = doc.createElement('entity')
+            entity_node.setAttribute('type', entity[1])
+            entity_node.appendChild(doc.createTextNode(entity[0]))
+            news_node.appendChild(entity_node)
+
+        root.appendChild(news_node)
+
+    with open(file, 'w', encoding='utf-8') as f:
+        doc.writexml(f, addindent='\t', newl='\n', encoding='utf-8')
 
 
 def main():
-    news_list = parse_xml(PEOPLE_DAILY)
-    word_sep(news_list[:1])
+    news_list = parse_xml(RES_FILE)
+    word_sep(news_list)
+    save_res(news_list)
+
 
 if __name__ == '__main__':
     main()

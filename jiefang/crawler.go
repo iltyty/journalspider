@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-// ArticleLink 代表文章详情链接
+// articleLink 代表文章详情链接
 // link 为文章详情链接
 // page 为文章所在版次，方便后面生成NewsList
 // pageName 为文章所在版次名称，方便后面生成NewsList

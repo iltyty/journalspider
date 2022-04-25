@@ -12,7 +12,7 @@ import (
 var xj = model.WebSite{
 	Domain: "epaper.ynet.com",
 	Urls: []string{
-		"http://epaper.ynet.com/html/2022-03/29/node_1331.htm",
+		"http://epaper.ynet.com/html/2022-04/17/node_1331.htm",
 	},
 	AllowedDomains: []string{
 		"epaper.ynet.com",
@@ -25,10 +25,7 @@ func parsePageLinks(nc *colly.Collector, elem *colly.HTMLElement) {
 	elem.ForEach(pageLinkSelector, func(i int, e *colly.HTMLElement) {
 		baseUrl := util.GetBaseUrl(e.Request.URL.String())
 		pageUrl := baseUrl + e.Attr("href")
-		err := nc.Visit(pageUrl)
-		if err != nil {
-			log.Fatal(err)
-		}
+		_ = nc.Visit(pageUrl)
 	})
 }
 
@@ -36,10 +33,7 @@ func parseNewsLinks(dc *colly.Collector, elem *colly.HTMLElement) {
 	elem.ForEach(newsLinkSelector, func(i int, e *colly.HTMLElement) {
 		baseUrl := util.GetBaseUrl(e.Request.URL.String())
 		newsUrl := baseUrl + e.Attr("href")
-		err := dc.Visit(newsUrl)
-		if err != nil {
-			log.Fatal(err)
-		}
+		_ = dc.Visit(newsUrl)
 	})
 }
 
